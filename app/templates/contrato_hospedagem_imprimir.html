@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Contrato de Intermediação de Serviços de Turismo</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .mt-1 { margin-top: 1rem; }
+    .text-center { text-align: center; }
+    .wrapper { padding: 30px 10px; }
+    table { width: 100%; border-spacing: 0; border-top: 1px solid #000; }
+    table td, th { border: 1px solid #000; padding: 4px 8px; }
+    th { background-color: #ccc; text-align: center; }
+    .d-flex { display: flex; justify-content: space-between; }
+  </style>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12pt;
+      margin: 0;
+      padding: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11pt;
+    }
+
+    th, td {
+      padding: 6px;
+      border: 1px solid #000;
+      text-align: left;
+    }
+
+    h1, h2, h3 {
+      margin-top: 1em;
+    }
+</style>
+
+</head>
+<body>
+  <div class="wrapper">
+    <main>
+      <p class="text-center"><b>CONTRATO DE INTERMEDIAÇÃO DE SERVIÇOS DE TURISMO</b></p>
+
+      <p class="mt-1"><b>1. DAS PARTES</b></p>
+      <p class="mt-1"><b>1.1 CONTRATADA</b></p>
+      <p class="mt-1"> A {{ empresa.razao_social }}, CNPJ {{ empresa.cnpj }}, sediada em {{ empresa.logradouro }}, {{ empresa.numero }} – {{ empresa.bairro }}, {{ empresa.municipio }} – {{ empresa.uf }}.</p>
+
+      <p class="mt-1"><b>1.2 CONTRATANTE</b></p>
+      <table class="mt-1">
+        <tr>
+          <th>Nome:</th><td colspan="5">{{ cliente.nome }}</td>
+        </tr>
+        <tr>
+          <th>CPF:</th><td colspan="2">{{ cliente.cpf }}</td>
+          <th>Data Nasc.:</th><td colspan="2">{{ cliente.data_nascimento }}</td>
+        </tr>
+        <tr>
+          <th>Telefone:</th><td colspan="5">{{ cliente.telefone }}</td>
+        </tr>
+        <tr>
+          <th>Endereço:</th><td colspan="3">{{ cliente.rua }}</td>
+          <th>Nº:</th><td>{{ cliente.numero }}</td>
+        </tr>
+        <tr>
+          <th>Bairro:</th><td colspan="3">{{ cliente.bairro }}</td>
+          <th>Compl.:</th><td>{{ cliente.complemento }}</td>
+        </tr>
+        <tr>
+          <th>Cidade:</th><td colspan="3">{{ cliente.cidade }}</td>
+          <th>UF:</th><td>{{ cliente.estado }}</td>
+        </tr>
+        <tr>
+          <th>CEP:</th><td colspan="5">{{ cliente.cep }}</td>
+        </tr>
+      </table>
+
+
+      <p class="mt-1"><b>2. DO OBJETO</b></p>
+      <p class="mt-1">Intermediação pela CONTRATADA de serviços de turismo prestados por fornecedores contratados.</p>
+
+      <p class="mt-1"><b>2.1. DOS SERVIÇOS INTERMEDIADOS</b></p>
+      
+      {% for hotel in hoteis %}
+        <p class="mt-1"><b>Numero da Reserva: {{ hotel.localizador }}</b></p>
+        <table border="1" cellspacing="0" cellpadding="4" width="100%">
+          <tr>
+            <th>Nome do Hotel:</th><td>{{ hotel.nome }}</td>
+            <th>Destino:</th><td>{{ hotel.destino }}</td>
+          </tr>
+          <tr>
+            <th>Acomodação:</th><td>{{ hotel.acomodacao }}</td>
+            <th>Regime:</th><td>{{ hotel.regime }}</td>
+          </tr>
+          <tr>
+            <th>Check-in:</th><td>{{ hotel.checkin }}</td>
+            <th>Check-out:</th><td>{{ hotel.checkout }}</td>
+          </tr>
+          <tr>
+            <th>Localizador Fornecedor:</th>
+            <td colspan="3">{{ reserva.numero_reserva_operadora }}</td>
+          </tr>
+        </table>
+      {% endfor %}
+
+      <h3 class="mt-2">3. PASSAGEIROS</h3>
+      <table border="1" cellspacing="0" cellpadding="4" width="100%">
+        <thead style="background-color: #d3d3d3;">
+          <tr>
+            <th style="text-align: center;">Nome</th>
+            <th style="text-align: center;">Data de Nasc.</th>
+            <th style="text-align: center;">Documento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in passageiros %}
+          <tr>
+            <td style="text-align: center;">{{ p.primeiro_nome }} {{ p.ultimo_nome }}</td>
+            <td style="text-align: center;">{{ p.data_nascimento.strftime("%d/%m/%Y") if p.data_nascimento }}</td>
+            <td style="text-align: center;">{{ p.cpf }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <p class="mt-1"><b>3. DO PREÇO</b></p>
+      <p class="mt-1">Os serviços contratados totalizam o valor abaixo descrito, já incluídas as taxas.</p>
+
+      {% if pagamento %}
+      
+      <p><b>Plano:</b> {{ pagamento.plano }}</p>
+      <p><b>Valor total financiado:</b> R$ {{ "%.2f"|format(pagamento.valor_total) }}</p>
+
+      <table border="1" cellspacing="0" cellpadding="4" width="100%">
+        <thead style="background-color: #d3d3d3;">
+          <tr>
+            <th style="text-align: center;">Parcela</th>
+            <th style="text-align: center;">Valor (R$)</th>
+            <th style="text-align: center;">Vencimento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for parcela in pagamento.parcelas %}
+          <tr>
+            <td style="text-align: center;">{{ "%02dº parcela"|format(parcela.numero) }}</td>
+            <td style="text-align: center;">R$ {{ "%.2f"|format(parcela.valor) }}</td>
+            <td style="text-align: center;">
+              {{ parcela.vencimento[:10] | reverse_date }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% endif %}
+
+            <p class="mt-1"><b>3.1. FORMA DE PAGAMENTO</b></p>
+      <p class="mt-1">O contratante que tiver realizado o pagamento da entrada será responsável pela quitação integral do parcelamento de todo o programa de viagem.</p>
+
+      <p class="mt-1"><b>3.2.</b> Fica a CONTRATADA, desde logo, autorizada pelo CONTRATANTE a ceder o crédito decorrente da operação de parcelamento para instituições financeiras de sua confiança.</p>
+
+      <p class="mt-1"><b>3.3. DO PAGAMENTO PARCELADO.</b> A cessão do crédito autoriza tais instituições a sub-rogar-se no direito de receber o valor das parcelas, conforme acordado no ato do parcelamento.</p>
+
+      <p class="mt-1"><b>3.4. INADIMPLÊNCIA DO CONTRATANTE.</b> A impontualidade no pagamento de qualquer parcela, independentemente do motivo, poderá dar ensejo a cobrança do débito com acréscimo de juros de 0,1% ao dia, multa de 2% e correção monetária pelo IGPM-FGV, despesas com cobranças, além de honorários advocatícios e custas judiciais se necessário o ingresso em juízo.</p>
+
+      <p class="mt-1"><b>3.5. DO PARCELAMENTO E CONTROLE DE PAGAMENTOS</b></p>
+      <p class="mt-1">Com o objetivo de tornar a viagem mais acessível, a <b>CONTRATADA</b> oferece a possibilidade de parcelamento mensal do valor total do pacote, através de boleto bancário, sem consulta aos órgãos de proteção ao crédito (SPC e SERASA).</p>
+      <p class="mt-1">Após o pagamento da entrada, o saldo restante poderá ser quitado em parcelas mensais, respeitando-se o prazo final de <b>até 72 horas antes da data do embarque</b> para quitação integral da viagem.</p>
+      <p class="mt-1">A <b>CONTRATADA</b> disponibiliza ao <b>CONTRATANTE</b> um sistema de controle financeiro personalizado, no qual é possível acompanhar o extrato de parcelas, realizar pagamentos extras e ter acesso ao saldo restante em tempo real, garantindo total transparência.</p>
+      <p class="mt-1">O não cumprimento dos prazos de pagamento poderá acarretar no <b>cancelamento automático</b> da reserva, conforme as cláusulas previstas neste contrato, incluindo aplicação de penalidades e multas por rescisão.</p>
+
+      <p class="mt-1"><b>4. DA ALTERAÇÃO, RESCISÃO E NÃO COMPARECIMENTO</b></p>
+
+      <p class="mt-1">
+        <b>4.1.</b> A critério do <b>CONTRATANTE</b>, poderão ocorrer as hipóteses de “Alteração da Contratação Inicial”, “Rescisão” e “Não Comparecimento”. Nessas oportunidades, deduzir-se-ão do valor cobrado pelo pacote turístico taxas administrativas e financeiras, bem como multas impostas pelos fornecedores.
+        <b>AS PENALIDADES ESTABELECIDAS OBEDECEM AO PERCENTUAL DISPOSTO NA TABELA ABAIXO, QUE SERÁ APLICADO TENDO POR BASE O PREÇO TOTAL DOS SERVIÇOS TURÍSTICOS CONTRATADOS E PRAZO DE INÍCIO A DATA DA ASSINATURA DO PRESENTE CONTRATO.</b>
+      </p>
+
+      <table class="mt-1">
+        <tr>
+          <th colspan="3">Alteração da Contratação, Rescisão e Não Comparecimento</th>
+        </tr>
+        <tr>
+          <th>Prazo antes do embarque</th>
+          <th>Prazo até</th>
+          <th>Multa</th>
+        </tr>
+        <tr><td>2º Mês antes do embarque</td><td>60 dias</td><td>100%</td></tr>
+        <tr><td>3º Mês antes do embarque</td><td>90 dias</td><td>75%</td></tr>
+        <tr><td>4º Mês antes do embarque</td><td>120 dias</td><td>50%</td></tr>
+        <tr><td>A qualquer momento antes do 5º mês</td><td>121 dias antes do embarque</td><td>30%</td></tr>
+      </table>
+
+      <p class="mt-1"><b>4.1.1. Cancelamento.</b> Em se tratando do cancelamento da Contratante, 60 dias antes da Viagem, não haverá devolução de valores, tampouco qualquer bonificação para o desistente.</p>
+
+      <p class="mt-1"><b>(i)</b> O atraso nas parcelas por prazo superior a 30 dias gera automaticamente o CANCELAMENTO deste contrato, vigorando os prazos e multas estabelecidas no quadro acima.</p>
+
+      <p class="mt-1"><b>(ii)</b> Em caso de doença, o Contratante deverá apresentar antes da data da viagem laudo médico com CID e declaração de impedimento. A análise caberá à empresa aérea ou fornecedor, isentando a CONTRATADA de responsabilidade.</p>
+
+      <p class="mt-1"><b>4.2.</b> Independentemente da hipótese, a CONTRATADA reterá 30% do valor contratado como taxa de serviços e despesas administrativas, além das multas aplicáveis.</p>
+
+      <p class="mt-1"><b>4.3.</b> Após o início da viagem, NÃO HAVERÁ devolução de valores pagos caso o CONTRATANTE desista da continuidade do serviço.</p>
+
+      <p class="mt-1"><b>4.4. CONDIÇÕES COMERCIAIS ESPECÍFICAS DE COMPANHIAS AÉREAS</b>: prevalecerão as regras tarifárias definidas pela companhia aérea contratada, cabendo à CONTRATADA apenas o repasse das penalidades.</p>
+
+      <p class="mt-1"><b>Cláusula adicional – CDC:</b> Em caso de cancelamento por parte do <b>CONTRATANTE</b>, serão aplicadas as penalidades previstas neste contrato, observados os prazos e percentuais estabelecidos, respeitando-se o direito ao reembolso proporcional nos termos do Código de Defesa do Consumidor, quando cabível.</p>
+
+           <p class="mt-1"><b>5. CONDIÇÕES COMERCIAIS ESPECÍFICAS DA TARIFA NÃO REEMBOLSÁVEL:</b>
+        Dado o seu caráter promocional,
+        <b>AS TARIFAS DO TIPO “NÃO REEMBOLSÁVEL” NÃO ESTÃO SUJEITAS A NENHUM TIPO DE REEMBOLSO.</b>
+        Conforme estabelecido pelo fornecedor, a tarifa não reembolsável é aplicável às reservas de quaisquer serviços turísticos que
+        <b>NÃO POSSAM</b> ser alteradas em nenhuma circunstância: itinerários, tipos de acomodação, regime de alimentação, datas, passageiros etc.
+        O <b>CONTRATANTE</b> declara ter sido devidamente informado dessas condições e concorda com o preço promocional.
+      </p>
+
+      <p class="mt-1"><b>6. ACEITAÇÃO AOS TERMOS DO CONTRATO</b></p>
+      <p class="mt-1">
+        O <b>CONTRATANTE</b> declara conhecer e aceitar integralmente todas as cláusulas deste contrato e das condições gerais, expostas na agência de viagens. O Anexo “Declaração de Porte de Documentos” também é parte integrante do contrato.
+      </p>
+
+      <p class="mt-1"><b>7. DA ELEIÇÃO DE FORO</b></p>
+      <p class="mt-1">
+        As partes elegem o foro da comarca de Campo Grande/MS para a solução de quaisquer conflitos oriundos deste CONTRATO, com renúncia de qualquer outro, por mais privilegiado que seja.
+      </p>
+
+      <p class="mt-1">E por estarem assim, justas e contratadas, firmam o presente instrumento em duas vias de igual forma e teor.</p>
+
+      <p class="text-center mt-1">Campo Grande/MS, {{ data_extenso }} – {{ horario }}</p>
+
+      <p style="margin-top: 80px;">&nbsp;</p>
+
+    <table width="100%" style="margin-top: 60px;">
+      <tr>
+        <td align="center">
+          <hr style="width: 80%;">
+          <b>{{ empresa.razao_social }}</b><br>
+          AGÊNCIA CONTRATADA
+        </td>
+        <td align="center">
+          <hr style="width: 80%;">
+          <b>{{ cliente.nome }}</b><br>
+          CONTRATANTE
+        </td>
+      </tr>
+    </table>
+
+      <div style="page-break-after: always;"></div>
+
+      <p style="margin-top: 80px;">&nbsp;</p>
+
+      <p class="mt-1"><b><u>DECLARAÇÃO DE PORTE DE DOCUMENTOS</u></b></p>
+
+      <p class="mt-1">Eu declaro ter sido informado pela <b>AGÊNCIA DE VIAGENS</b> que para realizar a viagem é necessário que eu e meus acompanhantes apresentemos os seguintes documentos:</p>
+
+      <p class="mt-1"><b>[ ] Viagens nacionais:</b> RG original em bom estado e com data de emissão inferior a 10 anos.</p>
+
+      <p class="mt-1"><b>[ ] Menores de 12 anos acompanhados por terceiros:</b> Necessária autorização assinada pelos pais com firma reconhecida e apresentação de documento original do menor.</p>
+
+      <p class="mt-1"><b>[ ] Menores de 12 anos desacompanhados:</b> Necessária autorização judicial.</p>
+
+      <p class="mt-1"><b>* Atenção:</b></p>
+      <p class="mt-1">
+        1. Em caso de falecimento de um dos pais, apresentar Certidão de Óbito;<br/>
+        2. Parentesco aceito: pais, irmãos, avós, tios maiores de idade comprovados por documentos;<br/>
+        3. Autorizações devem vir acompanhadas de cópia autenticada do RG de quem autoriza;<br/>
+        4. É recomendado consultar o Juizado da Infância e Juventude antes da viagem.
+      </p>
+
+      <p class="mt-1">A responsabilidade pela apresentação correta dos documentos é exclusivamente dos passageiros.</p>
+
+      <p class="mt-1">Recomenda-se a contratação de seguro viagem. A <b>CONTRATADA</b> não se responsabiliza por atendimento médico durante a viagem.</p>
+
+      <p class="mt-1">Declaro que eu e meus acompanhantes fomos informados sobre toda a documentação exigida, isentando a <b>CONTRATADA</b> de qualquer responsabilidade por danos materiais ou morais decorrentes da ausência dos documentos.</p>
+
+      <div style="margin-left: 20%; margin-top: 60px">
+        <p>Nome: ___________________________________________</p>
+        <p>CPF: ____________________________________________</p>
+        <p>Assinatura: ______________________________________</p>
+        <p>Data: _______/_______/_______</p>
+      </div>
+
+    </main>
+  </div>
+
+<script>
+  window.onload = function() {
+    window.print();
+  };
+</script>
+
+</body>
+</html>
+ 

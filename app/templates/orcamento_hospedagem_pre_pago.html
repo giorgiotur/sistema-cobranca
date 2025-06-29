@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>ORÇAMENTO VIAGEM PROGRAMADA</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 20px auto;
+            max-width: 800px;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        .topo {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .topo-left img {
+            height: 45px;
+        }
+        .topo-center h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .topo-right {
+            font-size: 14px;
+            color: #f1c40f;
+            text-align: right;
+        }
+        .bloco, .faq-bloco, .politica-cancelamento, .observacao, .footer, .viagem-programada {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            border-left: 6px solid #ccc;
+        }
+       
+        .viagem-programada-banner {
+            background-color: #ff7f00;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-top: 8px;
+        }
+
+        .viagem-programada-beneficios {
+            background-color: #e0f0ff; /* Azul claro ou o que preferir */
+            color: #333;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            border-left: 6px solid #ccc;
+        }
+
+        .viagem-programada-beneficios ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .viagem-programada-beneficios li {
+            margin-bottom: 8px;
+            padding-left: 22px;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .viagem-programada-beneficios li::before {
+            content: '✔️';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .descricao-hotel {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            margin-top: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .valor-total {
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .faq-bloco {
+            background-color: #f8f9fa;
+            border-left: 6px solid #3498db;
+        }
+        .politica-cancelamento {
+            background-color: #fdecea;
+            border-left: 6px solid #e74c3c;
+        }
+        .observacao {
+            font-size: 0.9em;
+            color: #555;
+            border-left: 6px solid #f1c40f;
+        }
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .tabela-parcelas td span {
+            white-space: nowrap;
+        }
+        table tbody tr {
+            page-break-inside: avoid;
+        }
+        @media (max-width: 600px) {
+            body {
+                margin: 10px;
+                font-size: 14px;
+            }
+            .topo {
+                flex-direction: column;
+                text-align: center;
+            }
+            .topo-right {
+                text-align: center;
+                margin-top: 10px;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+            table thead {
+                display: none;
+            }
+            table tbody tr {
+                margin-bottom: 15px;
+                border-bottom: 2px solid #ddd;
+                padding-bottom: 10px;
+            }
+            table td {
+                border: none;
+                padding: 8px 0;
+                text-align: left;
+                font-size: 14px;
+            }
+            table td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                display: block;
+                margin-bottom: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topo">
+    <div class="topo-left">
+        <img src="/static/imagens/logotopo.png" alt="Logo">
+    </div>
+    <div class="topo-center">
+        <h1>Orçamento Viagem Programada</h1>
+    </div>
+    <div class="topo-right">
+        Número do Orçamento: {{ numero_orcamento }}
+    </div>
+</div>
+
+<div class="viagem-programada-banner">
+    🎉 VIAGEM PROGRAMADA - SEM CONSULTA SPC/SERASA 🎉<br>
+    Flexibilidade, parcelamento acessível e sem burocracia!
+</div>
+
+<div class="bloco">
+    <h2>📍 Dados da Viagem</h2>
+    <p><strong>Destino:</strong> {{ cidade_destino }}</p>
+    <p><strong>Período:</strong> {{ numero_noites }} noite(s)</p>
+    <p><strong>Check-in:</strong> {{ data_checkin }} | <strong>Check-out:</strong> {{ data_checkout }}</p>
+    <ul>
+        <li><strong>Adultos:</strong> {{ adultos }}</li>
+        <li><strong>Crianças (0 a 5 anos):</strong> {{ chd_0_5 }}</li>
+        <li><strong>Crianças (6 a 11 anos):</strong> {{ chd_6_11 }}</li>
+    </ul>
+</div>
+
+<div class="bloco">
+    <h2>🏨 Hospedagem</h2>
+    {% for hotel in hoteis %}
+        <p><strong>Hotel:</strong> {{ hotel.nome }}</p>
+        <p><strong>Descrição:</strong></p>
+        <p class="descricao-hotel">
+            {{ hotel.descricao }}
+        </p>
+        <p><strong>Regime:</strong> {{ hotel.regime }}</p>
+        <p><strong>Acomodação:</strong> {{ hotel.tipo_apto }} ({{ hotel.numero_apto }} apto(s))</p>
+        <p><strong>Check-in:</strong> {{ hotel.data_entrada }} | <strong>Check-out:</strong> {{ hotel.data_saida }}</p>
+        {% if hotel.servicos %}
+            <p><strong>Serviços Inclusos:</strong> {{ hotel.servicos }}</p>
+        {% endif %}
+        <p class="valor-total">Valor Total: {{ hotel.valor }} – Valor para todos os passageiros</p>
+    {% endfor %}
+</div>
+
+
+<div class="bloco">
+    <h2>💳 Formas de Pagamento</h2>
+    {% if descricao_pagamento %}
+        <p><strong>Descrição:</strong> {{ descricao_pagamento }}</p>
+    {% endif %}
+    <table class="tabela-parcelas">
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for parcela in parcelas %}
+            <tr style="page-break-inside: avoid;">
+                <td data-label="Descrição">
+                    {{ parcela.descricao }}
+                </td>
+                <td data-label="Valor">
+                    <span style="white-space: nowrap;">
+                        R$ {{ "%.2f"|format(parcela.valor | float) }}
+                        <span style="font-size: 0.85em; color: #2980b9; font-weight: bold;">(no Boleto Bancário)</span>
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="bloco viagem-programada-beneficios">
+    <h3>🗓️ Viagem Programada - Sem Consulta SPC/Serasa</h3>
+    <ul>
+        <li>Parcelamento mensal via boleto bancário.</li>
+        <li>Sem consulta ao <strong>SPC</strong> ou <strong>SERASA</strong>.</li>
+        <li>Flexibilidade para escolher a melhor forma de pagamento.</li>
+        <li>Quitação total até 72h antes do embarque.</li>
+    </ul>
+</div>
+
+<div class="politica-cancelamento">
+    <h2>❗ Política de Cancelamento</h2>
+    <ul>
+        <li>Até 60 dias antes: Multa de 100%</li>
+        <li>Até 90 dias antes: Multa de 75%</li>
+        <li>Até 120 dias antes: Multa de 50%</li>
+        <li>Mais de 121 dias antes: Multa de 30%</li>
+    </ul>
+</div>
+
+<div class="observacao">
+    <h3>⚠️ Observações Importantes</h3>
+    <ul>
+        <li>Valores cotados em: {{ data_cotacao }}</li>
+        <li>Preços sujeitos a alterações.</li>
+    </ul>
+    <h3>👤 Agente Responsável:</h3>
+    <p><strong>{{ nome_usuario }}</strong></p>
+</div>
+
+<div class="footer">
+    Orçamento gerado em: {{ data_hora_geracao }}
+</div>
+
+</body>
+</html>
