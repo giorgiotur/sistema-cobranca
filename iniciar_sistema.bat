@@ -62,8 +62,8 @@ if exist "requirements.txt" (
 REM ===============================
 REM 7. INICIAR FASTAPI E STREAMLIT
 REM ===============================
-start "FastAPI" cmd /k "cd /d !PROJETO_DIR! && uvicorn app.main:app --reload"
-start "Painel" cmd /k "cd /d !PROJETO_DIR! && streamlit run painel.py"
+start "FastAPI" cmd /k "cd /d !PROJETO_DIR! && call venv\\Scripts\\activate.bat && uvicorn app.main:app --reload"
+start "Painel" cmd /k "cd /d !PROJETO_DIR! && call venv\\Scripts\\activate.bat && streamlit run painel.py"
 
 REM ===============================
 REM 8. COMMIT OPCIONAL AO FINAL
@@ -85,4 +85,5 @@ if /I "!SALVAR!"=="s" (
 )
 
 pause
+
 
