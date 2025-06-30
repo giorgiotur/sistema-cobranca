@@ -11,8 +11,8 @@ set PROJETO_DIR=
 
 if exist "C:\Users\AgenteRF03\Documents\sistema-cobranca" (
     set PROJETO_DIR=C:\Users\AgenteRF03\Documents\sistema-cobranca
-) else if exist "C:\Users\Documents\sistema-cobranca" (
-    set PROJETO_DIR=C:\Users\Documents\sistema-cobranca
+) else if exist "C:\Users\Samsung\Documents\sistema-cobranca" (
+    set PROJETO_DIR=C:\Users\Samsung\Documents\sistema-cobranca
 )
 
 if not defined PROJETO_DIR (
