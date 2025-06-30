@@ -39,7 +39,10 @@ from telas import consultar_orcamento
 from telas import detalhes_orcamento
 from telas.empresa import tela_empresa
 from telas.consultar_pacote_view import tela_consultar_pacotes
-import streamlit as st
+import streamlit as st  # ✅ Linha correta
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 st.write("Versão atual do Streamlit:", st.__version__)
 
 # ===== CONFIGURAÇÕES =====

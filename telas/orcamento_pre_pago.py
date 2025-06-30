@@ -10,12 +10,21 @@ load_dotenv()
 URL_API_BACKEND = os.getenv("API_BASE")
 
 def tela_orcamento_pre_pago():
+    # 🔷 TEXTO EXPLICATIVO INICIAL
+    st.markdown("""
+        <div style='background-color:#e8f4ff; padding:15px; border-radius:10px; margin-bottom:20px;'>
+            <span style='font-size:36px; font-weight:bold;'>📋 Orçamento Pré-Pago</span><br><br>
+            Preencha os dados abaixo para criar um orçamento detalhado da hospedagem.<br>
+            <span style='font-size:16px;'>
+                Após calcular o parcelamento, você poderá salvar e gerar o documento com todas as informações formatadas.
+            </span>
+        </div>
+    """, unsafe_allow_html=True)
+
 
     # -------------------------------
     # BLOCO 1 - DADOS DO PACOTE
     # -------------------------------
-
-    # Linha divisória visual entre os blocos
     st.markdown("<hr style='border:1px solid #ccc;'>", unsafe_allow_html=True)
 
     # Fundo visual leve
@@ -484,7 +493,13 @@ def tela_orcamento_pre_pago():
         st.markdown(f"**Data da Viagem (Check-in):** {data_ida.strftime('%d/%m/%Y') if data_ida else '❌ Não preenchido'}")
         st.markdown(f"**Prazo de Cancelamento:** {prazo_cancelamento.strftime('%d/%m/%Y') if prazo_cancelamento else '❌ Não preenchido'}")
 
+        # Desativar botão se campo 'prazo_cancelamento' estiver vazio
+        if not prazo_cancelamento:
+            habilitar_botao = False
+            st.warning("⚠️ Preencha o Prazo de Cancelamento para ativar o cálculo do parcelamento.")
+
         calcular_button = st.button("🔢 Calcular Parcelamento", disabled=not habilitar_botao)
+
 
     resultado = None
 
@@ -559,8 +574,49 @@ def tela_orcamento_pre_pago():
                     response = requests.post(f"{URL_API_BACKEND}/orcamentos/pre-pago/", json=payload, headers=headers)
 
                     if response.status_code in [200, 201]:
+
+                        API_BASE = os.getenv("API_BASE", "http://localhost:8000")
+                        token = st.session_state.get("token")
                         numero_orcamento = response.json().get("numero_orcamento")
-                        st.success(f"✅ Orçamento salvo com sucesso! Número do Orçamento: {numero_orcamento}")
+
+                        st.markdown("<hr style='border:1px solid #ddd;'>", unsafe_allow_html=True)
+                        st.markdown("### 🧾 Ações disponíveis para o orçamento gerado")
+                        st.markdown("<br>", unsafe_allow_html=True)
+
+                        col1, col2, col3 = st.columns([1, 1, 1])
+
+                        with col1:
+                            st.markdown(
+                                f"""
+                                <a href="{API_BASE}/orcamentos/pre-pago/{numero_orcamento}/html?token={token}" target="_blank">
+                                    <button style="background-color:#4CAF50; color:white; padding:10px 16px; border:none; border-radius:8px; font-size:16px; cursor:pointer;">
+                                        🔍 Visualizar Orçamento
+                                    </button>
+                                </a>
+                                """,
+                                unsafe_allow_html=True
+                            )
+
+                        with col2:
+                            st.markdown(
+                                f"""
+                                <a href="{API_BASE}/orcamentos/pre-pago/{numero_orcamento}/pdf?token={token}" download target="_blank">
+                                    <button style="
+                                        background-color:#2196F3;
+                                        color:white;
+                                        padding:10px 16px;
+                                        border:none;
+                                        border-radius:8px;
+                                        font-size:16px;
+                                        cursor:pointer;">
+                                        📥 Download em PDF
+                                    </button>
+                                </a>
+                                """,
+                                unsafe_allow_html=True
+                            )
+
+
                     else:
                         st.error(f"❌ Erro ao salvar orçamento: {response.status_code} - {response.text}")
 
