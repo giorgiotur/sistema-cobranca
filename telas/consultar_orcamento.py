@@ -146,52 +146,27 @@ def consultar_orcamento():
                         </button>
                     </a>
                 """, unsafe_allow_html=True)
-
+            is_admin = st.session_state.get("perfil") == "admin"
             # ❌ Excluir (somente Admin e apenas se não for reserva)
             with col_a3:
-                is_admin = st.session_state.get("perfil") == "admin"
-                possui_reserva = False
-                try:
-                    url_verifica = f"{API_BASE}/reservas/por-orcamento/{orc['id']}"
-                    resposta = requests.get(url_verifica, headers=headers)
-                    if resposta.status_code == 200 and resposta.json():
-                        possui_reserva = True
-                except:
-                    possui_reserva = False
-
                 if is_admin and not possui_reserva:
-                    # Botão real com ação
                     if st.button("❌", key=f"excluir_{orc['id']}", use_container_width=True, help="Excluir orçamento."):
                         st.session_state["confirmar_exclusao"] = orc["id"]
                 else:
-                    # Botão falso apenas visual com tooltip
                     mensagem = (
                         "🔒 Apenas administradores podem excluir orçamentos."
                         if not is_admin else
                         "⛔ Este orçamento já virou reserva e não pode ser excluído."
                     )
-
                     st.markdown(f"""
                         <div title="{mensagem}">
-                            <button style="
-                                width: 100%;
-                                height: 36px;
-                                padding: 6px 10px;
-                                border-radius: 6px;
-                                background-color: #f2f2f2;
-                                color: #bbb;
-                                border: 1px solid #e0e0e0;
-                                cursor: not-allowed;
-                                font-size: 16px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;"
-                                disabled
-                            >❌</button>
+                            <button style="width:100%; height:36px;" disabled>❌</button>
                         </div>
                     """, unsafe_allow_html=True)
 
+            # 🔁 Fora de todas as colunas: renderiza confirmação abaixo da lista
 
+                    
 
         with col8:
             if possui_reserva:
@@ -225,6 +200,29 @@ def consultar_orcamento():
                     st.session_state.pagina = "fluxo_reserva"
                     st.rerun()
 
+        
+        # ✅ AQUI (fora dos blocos 'with', mas ainda dentro do 'for')            
+        if st.session_state.get("confirmar_exclusao") == orc["id"]:
+            st.warning(f"⚠️ Confirmar exclusão do Orçamento #{orc['numero_orcamento']}?")
+            col_c1, col_c2 = st.columns(2)
+            with col_c1:
+                if st.button("✅ Confirmar", key=f"confirmar_excluir_{orc['id']}"):
+                    try:
+                        url_excluir = f"{API_BASE}/orcamentos/pre-pago/{orc['id']}"
+                        resp = requests.delete(url_excluir, headers=headers)
+                        if resp.status_code == 200:
+                            st.success("✅ Orçamento excluído com sucesso!")
+                            del st.session_state["confirmar_exclusao"]
+                            st.rerun()
+                        else:
+                            st.error(f"Erro ao excluir: {resp.status_code} - {resp.text}")
+                    except Exception as e:
+                        st.error(f"Erro ao tentar excluir: {e}")
+            with col_c2:
+                if st.button("❌ Cancelar", key=f"cancelar_excluir_{orc['id']}"):
+                    del st.session_state["confirmar_exclusao"]
+                    st.rerun()
+
                 
 # Consultar Orçamentos Pré-Pagos
 
@@ -250,3 +248,27 @@ def consultar_orcamento():
                 st.rerun()
 
     st.markdown(f"Página **{page}** de **{total_paginas}**")
+
+    # ✅ Fora das colunas
+    if st.session_state.get("confirmar_exclusao") == orc["id"]:
+        st.warning(f"⚠️ Confirmar exclusão do Orçamento #{orc['numero_orcamento']}?")
+        col_c1, col_c2 = st.columns(2)
+        with col_c1:
+            if st.button("✅ Confirmar", key=f"confirmar_excluir_{orc['id']}"):
+                try:
+                    url_excluir = f"{API_BASE}/orcamentos/pre-pago/{orc['id']}"
+
+
+                    resp = requests.delete(url_excluir, headers=headers)
+                    if resp.status_code == 200:
+                        st.success("✅ Orçamento excluído com sucesso!")
+                        del st.session_state["confirmar_exclusao"]
+                        st.rerun()
+                    else:
+                        st.error(f"Erro ao excluir: {resp.status_code} - {resp.text}")
+                except Exception as e:
+                    st.error(f"Erro ao tentar excluir: {e}")
+        with col_c2:
+            if st.button("❌ Cancelar", key=f"cancelar_excluir_{orc['id']}"):
+                del st.session_state["confirmar_exclusao"]
+                st.rerun()

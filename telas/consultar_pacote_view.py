@@ -38,7 +38,7 @@ def tela_consultar_pacotes():
         buscar = st.button("🔎 Buscar Reserva")
 
     # 🚀 Executa busca se clicar no botão ou se CPF veio de outra tela
-    if buscar or (st.session_state.get("cpf_pacote") and not st.session_state.get("buscou_pacote")):
+    if buscar:
         st.session_state["buscou_pacote"] = True
         st.rerun()
 
@@ -73,7 +73,8 @@ def tela_consultar_pacotes():
         return
 
     reserva = reservas[0]
-    orcamento = reserva.get("orcamento", {})
+    orcamento_raw = reserva.get("orcamento", {})
+    orcamento = orcamento_raw if isinstance(orcamento_raw, dict) else {}
 
     col1, col2 = st.columns(2)
 
@@ -94,8 +95,8 @@ def tela_consultar_pacotes():
         st.markdown(f"**Destino:** {orcamento.get('destino', '—')}")
         st.markdown(f"**Hotel:** {orcamento.get('nome_hotel', '—')}")
 
-        checkin = orcamento.get("data_ida")
-        checkout = orcamento.get("data_volta")
+        checkin = orcamento.get("data_ida") or "—"
+        checkout = orcamento.get("data_volta") or "—"
 
         def formatar_data(data_str):
             try:
@@ -192,3 +193,6 @@ def tela_consultar_pacotes():
             st.session_state.pop("cpf_pacote", None)
             st.session_state.pop("buscou_pacote", None)
             st.rerun()
+    # 🔄 Reset automático ao final da exibição
+    if st.session_state.get("buscou_pacote"):
+        st.session_state.pop("buscou_pacote")

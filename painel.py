@@ -181,6 +181,7 @@ def login_page():
                         cookies["nome"] = st.session_state.nome
                         cookies["foto_url"] = st.session_state.foto_url
                         cookies["cpf"] = dados.get("cpf", "")
+                        cookies["usuario_id"] = dados.get("id")  # ✅ LINHA ESSENCIAL ADICIONADA
                         cookies.save()
 
                     # ✅ Redirecionamento obrigatório para troca de senha se ainda estiver com a senha padrão
@@ -241,7 +242,13 @@ def carregar_pagina():
             st.session_state.perfil = cookies.get("perfil", "admin")
             st.session_state.nome = cookies.get("nome", "Usuário")
             st.session_state.foto_url = cookies.get("foto_url", "")
-            st.session_state.usuario_id = cookies.get("usuario_id", "default")
+            try:
+                st.session_state.usuario_id = int(cookies.get("usuario_id", "0"))  # ✅ Converte string -> int
+            except:
+                st.warning("⚠️ Não foi possível recuperar o ID do usuário. Redirecionando para login.")
+                st.session_state.logout = True
+                st.rerun()
+
             st.session_state.cpf = cookies.get("cpf", "")
 
             if "pagina" not in st.session_state:

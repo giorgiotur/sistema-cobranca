@@ -291,6 +291,33 @@ def tela_orcamento_pre_pago():
                 height=150
             )
             st.session_state["descricao_hotel"] = descricao_hotel
+            
+            # Proteção contra looping
+            if "limpeza_aplicada" not in st.session_state:
+                st.session_state["limpeza_aplicada"] = False
+
+            # Executar as regras apenas se ainda não limpou neste ciclo
+            if not st.session_state["limpeza_aplicada"]:
+                if st.session_state.get("nome_hotel", "").strip() == "":
+                    st.session_state["descricao_hotel"] = ""
+                    st.session_state["texto_original"] = ""
+                    st.session_state["limpeza_aplicada"] = True
+                    st.rerun()
+
+                elif st.session_state.get("texto_original", "").strip() == "":
+                    st.session_state["nome_hotel"] = ""
+                    st.session_state["descricao_hotel"] = ""
+                    st.session_state["limpeza_aplicada"] = True
+                    st.rerun()
+
+                elif st.session_state.get("descricao_hotel", "").strip() == "":
+                    st.session_state["nome_hotel"] = ""
+                    st.session_state["texto_original"] = ""
+                    st.session_state["limpeza_aplicada"] = True
+                    st.rerun()
+
+            # Após execução completa, zera o marcador para permitir limpeza futura
+            st.session_state["limpeza_aplicada"] = False
 
     else:
         st.warning("⚠️ Selecione ou cadastre uma cidade antes de continuar com os dados do hotel.")
@@ -408,9 +435,9 @@ def tela_orcamento_pre_pago():
                     pagamento_a_vista = True
 
             if not pagamento_a_vista:
-                st.error(f"❌ Atenção: O prazo de cancelamento sem custo deve ser no máximo {prazo_minimo_dias} dias antes do check-in.\n\n"
-                        f"Exemplo: Para check-in em {data_ida.strftime('%d/%m/%Y')}, o prazo limite é {data_limite_cancelamento.strftime('%d/%m/%Y')}.\n\n"
-                        "Só é permitido enviar orçamento fora do prazo para pagamentos à vista.")
+                st.error(f"""❌ Atenção: O prazo de cancelamento sem custo deve ser de até {prazo_minimo_dias} dias de antecedência da viagem.""")
+                st.error(f"""Exemplo: Para check-in em {data_ida.strftime('%d/%m/%Y')}, o prazo deve ser depois {data_limite_cancelamento.strftime('%d/%m/%Y')}.""")
+               
 
 
   

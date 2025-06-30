@@ -15,6 +15,10 @@ def tela_meus_dados():
         return
 
     perfil_logado = st.session_state.perfil.lower()
+    #st.subheader("🧪 DEBUG")
+    #st.write("ID do usuário:", usuario_id)
+    #st.write("Token:", st.session_state.get("token"))
+    #st.write("API_BASE:", API_BASE)
 
     try:
         resposta = requests.get(
@@ -22,7 +26,8 @@ def tela_meus_dados():
             headers={"Authorization": f"Bearer {st.session_state.token}"}
         )
         if resposta.status_code != 200:
-            st.error("❌ Erro ao carregar os dados do usuário.")
+            st.error(f"❌ Erro ao carregar os dados do usuário. Código {resposta.status_code}: {resposta.text}")
+
             return
         usuario = resposta.json()
     except Exception as e:
